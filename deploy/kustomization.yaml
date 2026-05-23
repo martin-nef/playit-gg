@@ -4,10 +4,6 @@ namespace: playit
 
 resources:
   - namespace.yaml
+  - secret.yaml
   - deployment.yaml
   - service.yaml
-
-secretGenerator:
-  - name: secret
-    files:
-      - secret-key=secret-key
