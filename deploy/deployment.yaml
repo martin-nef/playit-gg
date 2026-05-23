@@ -19,7 +19,7 @@ spec:
             secretName: secret
       containers:
         - name: playit
-          image: ghcr.io/martin-nef/playit:latest
+          image: ghcr.io/martin-nef/playit-gg:latest
           imagePullPolicy: Always
           command:
             - /usr/local/bin/playit
