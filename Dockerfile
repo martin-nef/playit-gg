@@ -1,21 +1,22 @@
 FROM debian:bookworm-slim
 
+ARG TARGETARCH
+
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
         ca-certificates \
         curl \
-        gnupg \
-    # add playit GPG key and apt source
-    && curl -SsL https://playit-cloud.github.io/ppa/key.gpg \
-        | gpg --dearmor \
-        > /etc/apt/trusted.gpg.d/playit.gpg \
-    && echo "deb [signed-by=/etc/apt/trusted.gpg.d/playit.gpg] https://playit-cloud.github.io/ppa/data ./" \
-        > /etc/apt/sources.list.d/playit-cloud.list \
-    # install playit
-    && apt-get update \
-    && apt-get install -y --no-install-recommends playit \
+    # install playit binary for current target architecture
+    && case "$TARGETARCH" in \
+        amd64) PLAYIT_ARCH="x86_64" ;; \
+        arm64) PLAYIT_ARCH="aarch64" ;; \
+        *) echo "Unsupported TARGETARCH: $TARGETARCH" && exit 1 ;; \
+    esac \
+    && curl -fL "https://github.com/playit-cloud/playit-agent/releases/latest/download/playit-linux-${PLAYIT_ARCH}" \
+        -o /usr/local/bin/playit \
+    && chmod +x /usr/local/bin/playit \
     # strip build-time packages and clean caches
-    && apt-get purge -y curl gnupg \
+    && apt-get purge -y curl \
     && apt-get autoremove -y --purge \
     && rm -rf /var/lib/apt/lists/*
 
