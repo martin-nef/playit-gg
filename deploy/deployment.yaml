@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: agent
+  namespace: playit
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: playit-agent
+  template:
+    metadata:
+      labels:
+        app: playit-agent
+    spec:
+      volumes:
+        - name: secret-data
+          secret:
+            secretName: secret
+      containers:
+        - name: playit
+          image: ghcr.io/martin-nef/playit:latest
+          command:
+            - /usr/local/bin/playit
+            - --secret_wait
+            - --secret_path
+            - /secret-data/playit.toml
+            - --stdout
+          volumeMounts:
+            - name: secret-data
+              mountPath: /secret-data
+              readOnly: true
