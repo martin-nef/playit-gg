@@ -13,21 +13,13 @@ spec:
       labels:
         app: playit-agent
     spec:
-      volumes:
-        - name: secret-data
-          secret:
-            secretName: secret
       containers:
         - name: playit
-          image: ghcr.io/martin-nef/playit-gg:latest
+          image: ghcr.io/playit-cloud/playit-agent:1.0
           imagePullPolicy: Always
-          command:
-            - /usr/local/bin/playit
-            - --secret_wait
-            - --secret_path
-            - /secret-data/playit.toml
-            - --stdout
-          volumeMounts:
-            - name: secret-data
-              mountPath: /secret-data
-              readOnly: true
+          env:
+            - name: SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: secret-key

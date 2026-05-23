@@ -10,4 +10,4 @@ resources:
 secretGenerator:
   - name: secret
     files:
-      - playit.toml=playit.toml.json
+      - secret-key=secret-key
