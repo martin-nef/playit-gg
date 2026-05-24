@@ -7,7 +7,12 @@ RUN apt-get update \
         ca-certificates \
         curl \
     # install playit binary for current target architecture
-    && curl -fL "https://github.com/playit-cloud/playit-agent/releases/latest/download/playit-linux-${TARGETARCH}" \
+    && case "$TARGETARCH" in \
+        amd64) PLAYIT_ARCH="amd64" ;; \
+        arm64) PLAYIT_ARCH="aarch64" ;; \
+        *) echo "Unsupported TARGETARCH: $TARGETARCH" && exit 1 ;; \
+    esac \
+    && curl -fL "https://github.com/playit-cloud/playit-agent/releases/latest/download/playit-linux-${PLAYIT_ARCH}" \
         -o /usr/local/bin/playit \
     && chmod +x /usr/local/bin/playit \
     # strip build-time packages and clean caches
