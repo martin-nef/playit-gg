@@ -4,7 +4,7 @@ metadata:
   name: agent
   namespace: playit
 spec:
-  replicas: 1
+  replicas: 0
   selector:
     matchLabels:
       app: playit-agent
